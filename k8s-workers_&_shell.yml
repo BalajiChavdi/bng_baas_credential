@@ -1,4 +1,5 @@
 #!/usr/bin/ansible-playbook
+########## BNG prod
 ---
 
 - name: Effort to maintain credential of BaaS worker servers
@@ -32,20 +33,6 @@
       delegate_to: 127.0.0.1
       tags: access
 
-#     # - copy:
-#     #     src: /etc/ansible/remote_files/automount/auto_homes_bng
-#     #     dest: /var/lib/awx/projects/_142__users_access_to_baas_env_workers_shell_servers/roles/common_infra/files/autofs/auto_homes_bng
-#     #     backup: yes
-#     #   delegate_to: 127.0.0.1
-#     #   tags: access
-#     #
-#     # - copy:
-#     #     src: /root/baas/prod_users
-#     #     dest: /var/lib/awx/projects/_142__users_access_to_baas_env_workers_shell_servers/roles/shell-servers/files/
-#     #     backup: yes
-#     #   delegate_to: 127.0.0.1
-#     #   tags: access
-
     - copy:
         src: /usr/lib/python2.7/site-packages/ansible/modules/custom_modules/gen_pass.py
         dest: /root/baas/gen_pass.py
@@ -65,14 +52,19 @@
       delegate_to: 127.0.0.1
       tags: access
 
+    - command: cat /root/baas/prod_users | wc -l
+      delegate_to: 127.0.0.1
+      register: line_count
+
     - name: including roles
       include_role:
         name: workers
-      when: file_details.stat.size != 0
+      when: file_details.stat.size != 0 and line_count > 50
 
     - name: including roles
       include_role:
         name: common_infra
+      when: file_details.stat.size != 0 and line_count > 50
 
 - name: Effort to maintain credential of BaaS shell servers
   hosts: baas-shell_grp
@@ -90,8 +82,9 @@
     - name: including roles
       include_role:
         name: shell-servers
-      when: file_details.stat.size != 0
+      when: file_details.stat.size != 0 and line_count > 50
 
     - name: including roles
       include_role:
         name: common_infra
+      when: file_details.stat.size != 0 and line_count > 50
