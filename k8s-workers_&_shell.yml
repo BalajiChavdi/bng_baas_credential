@@ -59,12 +59,12 @@
     - name: including roles
       include_role:
         name: workers
-      when: file_details.stat.size != 0 and line_count > 50
+      when: file_details.stat.size != 0 and line_count > 300
 
     - name: including roles
       include_role:
         name: common_infra
-      when: file_details.stat.size != 0 and line_count > 50
+      when: file_details.stat.size != 0 and line_count > 300
 
 - name: Effort to maintain credential of BaaS shell servers
   hosts: baas-shell_grp
@@ -82,9 +82,9 @@
     - name: including roles
       include_role:
         name: shell-servers
-      when: file_details.stat.size != 0 and line_count > 50
+      when: file_details.stat.size != 0 and line_count > 300
 
     - name: including roles
       include_role:
         name: common_infra
-      when: file_details.stat.size != 0 and line_count > 50
+      when: file_details.stat.size != 0 and line_count > 300
